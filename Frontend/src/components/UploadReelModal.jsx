@@ -34,7 +34,7 @@ export default function UploadReelModal({ isOpen, onClose }) {
     formData.append('clerkUserId', user.id);
 
     try {
-      await axios.post(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/reels/upload`, formData, {
+      await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/reels/upload`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       setIsUploading(false);

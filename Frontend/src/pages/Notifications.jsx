@@ -6,7 +6,7 @@ import { useSocket } from '../contexts/SocketContext';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-const API_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 export default function Notifications() {
   const { user } = useUser();

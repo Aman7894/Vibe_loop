@@ -55,7 +55,20 @@ app.get("/", (req, res) => {
 // Get all users (for Chat/Follow contacts)
 app.get('/api/users', async (req, res) => {
     try {
-        const users = await UserModel.find({}, 'username imageUrl clerkId _id');
+        const { clerkId, followingOnly } = req.query;
+        let query = {};
+
+        if (followingOnly === 'true' && clerkId) {
+            const user = await UserModel.findOne({ clerkId });
+            if (user && user.following && user.following.length > 0) {
+                query = { _id: { $in: user.following } };
+            } else {
+                // If they follow no one, return empty
+                return res.status(200).json({ users: [] });
+            }
+        }
+
+        const users = await UserModel.find(query, 'username imageUrl clerkId _id');
         res.status(200).json({ users });
     } catch (err) {
         res.status(500).json({ error: err.message });

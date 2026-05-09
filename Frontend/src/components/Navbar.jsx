@@ -22,7 +22,7 @@ export default function Navbar() {
 
   useEffect(() => {
     if (user) {
-      axios.get(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api/notifications/${user.id}`)
+      axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/notifications/${user.id}`)
         .then(res => {
           const unread = res.data.notifications.filter(n => !n.isRead).length;
           setUnreadCount(unread);

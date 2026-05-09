@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
-const API_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 const DMPage = () => {
   const socket = useSocket();
@@ -25,7 +25,7 @@ const DMPage = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axios.get(`${API_URL}/api/users`);
+        const res = await axios.get(`${API_URL}/api/users?clerkId=${user.id}&followingOnly=true`);
         // filter out ourselves
         setUsers(res.data.users.filter(u => u.clerkId !== user?.id));
       } catch (err) {

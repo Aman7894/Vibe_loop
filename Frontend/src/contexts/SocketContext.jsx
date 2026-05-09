@@ -13,7 +13,7 @@ export const SocketProvider = ({ children }) => {
   useEffect(() => {
     if (isLoaded && user) {
       // Connect to Socket.io server
-      const newSocket = io(import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000');
+      const newSocket = io(import.meta.env.VITE_API_URL || 'http://localhost:3000');
       
       newSocket.on('connect', () => {
         console.log('Connected to socket server');
