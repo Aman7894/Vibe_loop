@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
-import axios from 'axios';
+import api from '../lib/axios';
 import { Heart, MessageCircle, Share2, Bookmark, Volume2, VolumeX } from 'lucide-react';
 import { useUser } from '@clerk/clerk-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-const API_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 const ReelsFeed = () => {
   const [reels, setReels] = useState([]);
@@ -17,6 +17,7 @@ const ReelsFeed = () => {
   const { user } = useUser();
   const { t } = useTranslation();
   const { reelId } = useParams();
+  const navigate = useNavigate();
   const videoRefs = useRef([]);
 
   const showToast = (msg) => {
@@ -60,8 +61,8 @@ const ReelsFeed = () => {
     const fetchData = async () => {
       try {
         const [reelsRes, savedRes] = await Promise.all([
-          axios.get(`${API_URL}/api/reels`),
-          axios.get(`${API_URL}/api/saved/${user.id}`)
+          api.get('/api/reels'),
+          api.get(`/api/saved/${user.id}`)
         ]);
 
         const savedIds = (savedRes.data.savedReels || []).map(id => id.toString());
@@ -102,7 +103,7 @@ const ReelsFeed = () => {
     setReels(newReels);
 
     try {
-      await axios.post(`${API_URL}/api/reels/${reelId}/like`, { clerkUserId: user.id });
+      await api.post(`/api/reels/${reelId}/like`, { clerkUserId: user.id });
     } catch (err) {
       console.error("Failed to like", err);
       const reverted = [...reels];
@@ -125,7 +126,7 @@ const ReelsFeed = () => {
     }
 
     try {
-      await axios.post(`${API_URL}/api/reels/${reelId}/save`, { clerkUserId: user.id });
+      await api.post(`/api/reels/${reelId}/save`, { clerkUserId: user.id });
     } catch (err) {
       // Revert
       if (wasSaved) {
@@ -222,7 +223,7 @@ const ReelsFeed = () => {
                   </div>
                 </Link>
                 <button 
-                  onClick={() => window.location.href = `/profile/${reel.creator?.clerkId || ''}`} 
+                  onClick={() => navigate(`/profile/${reel.creator?.clerkId || ''}`)} 
                   className="text-[10px] bg-white text-black px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider mt-0.5 shadow-md hover:bg-neutral-200 transition"
                 >
                   {t('Profile')}

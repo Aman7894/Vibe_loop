@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../lib/axios';
 import { useUser } from '@clerk/clerk-react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-const API_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 export default function SuggestedUsers() {
   const { user: currentUser } = useUser();
@@ -18,10 +18,9 @@ export default function SuggestedUsers() {
   useEffect(() => {
     if (!currentUser) return;
     
-    // Fetch all users and current user's profile to know who we follow
     Promise.all([
-      axios.get(`${API_URL}/api/users`),
-      axios.get(`${API_URL}/api/users/${currentUser.id}`)
+      api.get('/api/users'),
+      api.get(`/api/users/${currentUser.id}`)
     ])
     .then(([allUsersRes, currentProfileRes]) => {
         const followingArray = currentProfileRes.data.user.following || [];
@@ -65,7 +64,7 @@ export default function SuggestedUsers() {
     }));
 
     try {
-        await axios.post(`${API_URL}/api/users/${targetUserId}/follow`, { 
+        await api.post(`/api/users/${targetUserId}/follow`, { 
             clerkUserId: currentUser.id 
         });
     } catch (err) {

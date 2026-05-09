@@ -35,6 +35,8 @@ function App() {
     <ClerkProvider 
       publishableKey={PUBLISHABLE_KEY || "missing_key"} 
       afterSignOutUrl="/"
+      signInUrl="/login"
+      signUpUrl="/signup"
       appearance={{ baseTheme: dark }}
     >
       <SyncUser />
